@@ -1,16 +1,47 @@
+"use client";
+
 import Link from "next/link";
 import { SpinningText } from "@/components/magicui/spinning-text";
 import Image from "next/image";
 import { FeaturesSectionWithHoverEffects } from "@/components/feature-section-with-hover-effects";
-import React from "react";
+import React, { useState } from "react";
 import Spline from "@splinetool/react-spline";
 
+import { Loader2 } from "lucide-react";
+
 const SplineComponent = React.memo(() => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handleLoad = () => {
+    setIsLoading(false);
+  };
+
   return (
-    <Spline
-      className="absolute opacity-80"
-      scene="https://prod.spline.design/A7BuU0farRvm1M6l/scene.splinecode"
-    />
+    <div className="absolute w-full h-full">
+      {isLoading ? (
+        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50">
+          <Loader2 className="animate-spin text-muted-foreground w-10 h-10" />
+        </div>
+      ) : (
+        <>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="p-10">
+              <FeaturesSectionWithHoverEffects />
+            </div>
+          </div>
+
+          <div className="absolute w-full h-full bg-black -z-50" />
+        </>
+      )}
+
+      <Spline
+        className={`absolute opacity-80 transition-opacity bg-white duration-300 ${
+          isLoading ? "opacity-0" : "opacity-80"
+        }`}
+        scene="/spline/scene.splinecode"
+        onLoad={handleLoad}
+      />
+    </div>
   );
 });
 
@@ -46,12 +77,8 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
           </div>
         </footer>
       </div>
-      <div className="relative hidden 2xl:flex w-full bg-black border-1">
+      <div className="relative hidden 2xl:flex w-full border-1">
         <SplineComponent />
-
-        <div className=" w-full p-10 my-auto">
-          <FeaturesSectionWithHoverEffects />
-        </div>
 
         <SpinningText className="absolute right-16 bottom-16 text-white line-through leading-loose text-xs">
           APROVADO • POR • MILHARES DE • EMPRESAS •
